@@ -1,0 +1,136 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Authenticated internal user profile in HunarOS",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": {
+          "type": "string",
+          "enum": ["SUPER_OWNER", "SUPER_ADMIN", "ADMIN", "COORDINATOR", "STAFF", "AGENT"]
+        },
+        "accountStatus": {
+          "type": "string",
+          "enum": ["PENDING", "ACTIVE", "SUSPENDED", "DISABLED"]
+        },
+        "phone": { "type": "string" },
+        "cnic": { "type": "string" },
+        "pinHash": { "type": "string" },
+        "pinSalt": { "type": "string" },
+        "defaultOrgId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "role", "accountStatus"]
+    },
+    "Organization": {
+      "title": "Organization",
+      "description": "Vocational institute or training center entity",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "code": { "type": "string" },
+        "type": { "type": "string", "enum": ["NAVTTC_AFFILIATED", "PRIVATE_INSTITUTE", "HYBRID"] },
+        "city": { "type": "string" },
+        "address": { "type": "string" },
+        "contactEmail": { "type": "string", "format": "email" },
+        "contactPhone": { "type": "string" },
+        "status": { "type": "string", "enum": ["ACTIVE", "SUSPENDED", "ARCHIVED"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "code", "status"]
+    },
+    "Membership": {
+      "title": "Membership",
+      "description": "User-organization association and scoped permissions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "organizationId": { "type": "string" },
+        "role": { "type": "string", "enum": ["SUPER_OWNER", "SUPER_ADMIN", "ADMIN", "COORDINATOR", "STAFF", "AGENT"] },
+        "permissions": { "type": "array" },
+        "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "organizationId", "role", "status"]
+    },
+    "Person": {
+      "title": "Person",
+      "description": "Global unique identity for candidate/student/staff across institutes",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fullName": { "type": "string" },
+        "cnic": { "type": "string" },
+        "fatherName": { "type": "string" },
+        "phone": { "type": "string" },
+        "gender": { "type": "string", "enum": ["MALE", "FEMALE", "OTHER"] },
+        "dateOfBirth": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "fullName", "phone"]
+    },
+    "CNICReservation": {
+      "title": "CNICReservation",
+      "description": "Atomic reservation mapping a unique CNIC to a canonical Person ID",
+      "type": "object",
+      "properties": {
+        "cnic": { "type": "string" },
+        "personId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["cnic", "personId"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Append-only immutable record of material system mutations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "actorUid": { "type": "string" },
+        "actorEmail": { "type": "string" },
+        "organizationId": { "type": "string" },
+        "action": { "type": "string" },
+        "entityType": { "type": "string" },
+        "entityId": { "type": "string" },
+        "occurredAt": { "type": "string", "format": "date-time" },
+        "metadata": { "type": "object" }
+      },
+      "required": ["id", "actorUid", "action", "entityType", "entityId", "occurredAt"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "User",
+      "description": "Stores user profiles and global roles"
+    },
+    "/organizations/{orgId}": {
+      "schema": "Organization",
+      "description": "Stores organization/institute profile records"
+    },
+    "/organizations/{orgId}/members/{userId}": {
+      "schema": "Membership",
+      "description": "Stores scoped organization memberships and permissions"
+    },
+    "/persons/{personId}": {
+      "schema": "Person",
+      "description": "Stores canonical Person records keyed globally"
+    },
+    "/cnic_reservations/{cnic}": {
+      "schema": "CNICReservation",
+      "description": "Atomic reservation preventing duplicate CNICs"
+    },
+    "/organizations/{orgId}/audit_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Stores append-only audit entries per organization"
+    }
+  }
+}

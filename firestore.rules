@@ -1,0 +1,104 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isSuperOwner() {
+      return isSignedIn() && (
+        ('role' in request.auth.token && request.auth.token.role == 'SUPER_OWNER') ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'SUPER_OWNER')
+      );
+    }
+
+    function isOrgMember(orgId) {
+      return isSignedIn() && (
+        isSuperOwner() ||
+        exists(/databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid))
+      );
+    }
+
+    function getOrgRole(orgId) {
+      return get(/databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid)).data.role;
+    }
+
+    function isOrgAdmin(orgId) {
+      return isSignedIn() && (
+        isSuperOwner() ||
+        (exists(/databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid)) &&
+         (get(/databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid)).data.role in ['ADMIN', 'SUPER_ADMIN']))
+      );
+    }
+
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isSuperOwner());
+      allow list: if isSuperOwner();
+      allow create: if isSignedIn() && (request.auth.uid == userId || isSuperOwner());
+      allow update: if isSignedIn() && (request.auth.uid == userId || isSuperOwner());
+      allow delete: if isSuperOwner();
+    }
+
+    // Organizations collection
+    match /organizations/{orgId} {
+      allow get: if isOrgMember(orgId);
+      allow list: if isSuperOwner();
+      allow create: if isSuperOwner();
+      allow update: if isSuperOwner() || (
+        isOrgAdmin(orgId) &&
+        // Strictly protect subscription, operational status, and immutable identity keys
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'subscription',
+          'status',
+          'code',
+          'id',
+          'createdAt'
+        ])
+      );
+      allow delete: if isSuperOwner();
+
+      // Members subcollection (Admins only for write)
+      match /members/{memberId} {
+        allow get, list: if isOrgMember(orgId);
+        allow create, update: if isOrgAdmin(orgId);
+        allow delete: if isOrgAdmin(orgId);
+      }
+
+      // Audit logs (strictly append-only, immutable, no updates or deletes under any circumstances)
+      match /audit_logs/{logId} {
+        allow get, list: if isOrgMember(orgId);
+        allow create: if isOrgMember(orgId);
+        allow update, delete: if false;
+      }
+
+      // Operational collections (Programs, Courses, Batches, Leads, Enrollments, Attendance, Documents, Certificates)
+      // Explicitly protect reserved subcollections from wildcard rule overlap
+      match /{collectionName}/{docId} {
+        allow get, list: if isOrgMember(orgId) && collectionName != 'audit_logs' && collectionName != 'members';
+        allow create, update: if isOrgMember(orgId) && collectionName != 'audit_logs' && collectionName != 'members';
+        allow delete: if isOrgAdmin(orgId) && collectionName != 'audit_logs' && collectionName != 'members';
+      }
+    }
+
+    // Global Person registry
+    match /persons/{personId} {
+      allow read, create, update: if isSignedIn();
+      allow delete: if false;
+    }
+
+    // CNIC uniqueness reservation
+    match /cnic_reservations/{cnic} {
+      allow read, create: if isSignedIn();
+      allow update, delete: if false;
+    }
+  }
+}
