@@ -124,7 +124,15 @@ service cloud.firestore {
 
     // CNIC uniqueness reservation
     match /cnic_reservations/{cnic} {
-      allow read, create: if isSignedIn();
+      allow read: if isSignedIn();
+
+      allow create: if isSignedIn()
+        && request.resource.data.orgId is string
+        && request.resource.data.instituteId is string
+        && request.resource.data.personId is string
+        && isOrgMember(request.resource.data.orgId)
+        && hasInstituteAccess(request.resource.data.orgId, request.resource.data.instituteId);
+
       allow update, delete: if false;
     }
   }
