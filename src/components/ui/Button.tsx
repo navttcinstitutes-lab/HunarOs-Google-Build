@@ -18,7 +18,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed select-none rounded-md';
+    'inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed select-none rounded-md';
 
   const sizeStyles = {
     sm: 'text-xs px-3 py-1.5 gap-1.5 min-h-[32px]',
@@ -28,15 +28,15 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantStyles = {
     primary:
-      'bg-neutral-900 text-white hover:bg-neutral-800 focus:ring-neutral-900 border border-transparent shadow-xs',
+      'bg-neutral-900 text-white hover:bg-neutral-800 focus-visible:ring-neutral-900 border border-transparent shadow-xs',
     secondary:
-      'bg-neutral-100 text-neutral-800 hover:bg-neutral-200 focus:ring-neutral-300 border border-transparent',
+      'bg-neutral-100 text-neutral-800 hover:bg-neutral-200 focus-visible:ring-neutral-300 border border-transparent',
     outline:
-      'bg-white text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 border border-neutral-300 focus:ring-neutral-400',
+      'bg-white text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 border border-neutral-300 focus-visible:ring-neutral-400',
     danger:
-      'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 border border-transparent',
+      'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500 border border-transparent',
     ghost:
-      'bg-transparent text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 focus:ring-neutral-300',
+      'bg-transparent text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 focus-visible:ring-neutral-300',
   };
 
   return (

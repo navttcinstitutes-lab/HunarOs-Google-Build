@@ -30,7 +30,7 @@ export const Modal: React.FC<ModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/60 backdrop-blur-xs">
       <div
-        className={`w-full ${maxWidthClasses[maxWidth]} bg-white rounded-lg border border-neutral-200 shadow-xl overflow-hidden flex flex-col`}
+        className={`w-full ${maxWidthClasses[maxWidth]} bg-white rounded-lg border border-neutral-200 shadow-xl overflow-hidden flex flex-col overscroll-contain`}
         role="dialog"
         aria-modal="true"
       >

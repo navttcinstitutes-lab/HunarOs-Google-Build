@@ -54,7 +54,7 @@ export const AuditLogView: React.FC<AuditLogViewProps> = ({
     return (
       <div className="space-y-6 text-left">
         <div className="pb-4 border-b border-neutral-200">
-          <h1 className="text-xl font-bold tracking-tight text-neutral-900">
+          <h1 className="text-xl font-bold tracking-tight text-neutral-900 text-balance">
             Immutable Audit Trail
           </h1>
           <p className="text-xs text-neutral-500 mt-1">
@@ -72,7 +72,7 @@ export const AuditLogView: React.FC<AuditLogViewProps> = ({
     <div className="space-y-6 text-left">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-neutral-200">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-neutral-900">
+          <h1 className="text-xl font-bold tracking-tight text-neutral-900 text-balance">
             Immutable Audit Trail
           </h1>
           <p className="text-xs text-neutral-500 mt-1">
@@ -107,7 +107,7 @@ export const AuditLogView: React.FC<AuditLogViewProps> = ({
               {logs.map((log) => (
                 <tr key={log.id} className="hover:bg-neutral-50/50 transition-colors">
                   <td className="py-3 px-4 text-neutral-500 whitespace-nowrap">
-                    {new Date(log.occurredAt).toLocaleString()}
+                    {new Intl.DateTimeFormat(undefined, { dateStyle: 'short', timeStyle: 'short' }).format(new Date(log.occurredAt))}
                   </td>
 
                   <td className="py-3 px-4">

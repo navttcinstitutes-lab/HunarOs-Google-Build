@@ -29,10 +29,10 @@ export const Select: React.FC<SelectProps> = ({
       )}
       <select
         id={selectId}
-        className={`w-full rounded-md border bg-white px-3 py-2 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors ${
+        className={`w-full rounded-md border bg-white px-3 py-2 text-sm text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 transition-colors ${
           error
-            ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-200'
-            : 'border-neutral-300 focus:border-neutral-900 focus:ring-neutral-200'
+            ? 'border-rose-300 focus-visible:border-rose-500 focus-visible:ring-rose-200'
+            : 'border-neutral-300 focus-visible:border-neutral-900 focus-visible:ring-neutral-200'
         } ${className}`}
         {...props}
       >

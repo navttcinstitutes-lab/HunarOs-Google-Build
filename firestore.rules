@@ -34,6 +34,13 @@ service cloud.firestore {
       );
     }
 
+    function hasInstituteAccess(orgId, instituteId) {
+      return isSignedIn()
+        && (isSuperOwner()
+            || (exists(/databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid))
+                && instituteId in get(/databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid)).data.instituteAccess));
+    }
+
     // Default deny all
     match /{document=**} {
       allow read, write: if false;
@@ -91,7 +98,27 @@ service cloud.firestore {
 
     // Global Person registry
     match /persons/{personId} {
-      allow read, create, update: if isSignedIn();
+      function personOrg() {
+        return resource.data.orgId;
+      }
+      function personInstitute() {
+        return resource.data.instituteId;
+      }
+
+      allow read: if isSignedIn()
+        && isOrgMember(personOrg())
+        && hasInstituteAccess(personOrg(), personInstitute());
+
+      allow create: if isSignedIn()
+        && request.resource.data.orgId is string
+        && request.resource.data.instituteId is string
+        && isOrgMember(request.resource.data.orgId)
+        && hasInstituteAccess(request.resource.data.orgId, request.resource.data.instituteId);
+
+      allow update: if isSignedIn()
+        && isOrgMember(personOrg())
+        && hasInstituteAccess(personOrg(), personInstitute());
+
       allow delete: if false;
     }
 

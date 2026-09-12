@@ -172,7 +172,7 @@ export const OrganizationsView: React.FC<OrganizationsViewProps> = ({
     <div className="space-y-6 text-left">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-neutral-200">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-neutral-900">Institutes & Organizations</h1>
+          <h1 className="text-xl font-bold tracking-tight text-neutral-900 text-balance">Institutes & Organizations</h1>
           <p className="text-xs text-neutral-500 mt-1">Governed training centers with isolated database boundaries.</p>
         </div>
         {canManageOrg && (
@@ -186,7 +186,7 @@ export const OrganizationsView: React.FC<OrganizationsViewProps> = ({
         {organizations.map((org) => {
           const isActive = activeOrg?.id === org.id;
           return (
-            <div key={org.id} className={`bg-white rounded-lg border p-5 transition-all flex flex-col justify-between ${isActive ? 'border-neutral-900 ring-1 ring-neutral-900 shadow-xs' : 'border-neutral-200 hover:border-neutral-300'}`}>
+            <div key={org.id} className={`bg-white rounded-lg border p-5 transition-colors duration-200 shadow-sm hover:shadow flex flex-col justify-between ${isActive ? 'border-neutral-900 ring-1 ring-neutral-900 shadow-xs' : 'border-neutral-200 hover:border-neutral-300'}`}>
               <div>
                 <div className="flex items-start justify-between gap-2">
                   <span className="font-mono text-[11px] font-bold tracking-wider px-2 py-0.5 rounded bg-neutral-100 text-neutral-800 border border-neutral-200 break-all">{org.code}</span>
@@ -227,10 +227,10 @@ export const OrganizationsView: React.FC<OrganizationsViewProps> = ({
                 <div className="flex items-center gap-2 shrink-0">
                   {canManageOrg && (
                     <>
-                      <Button variant="outline" size="sm" className="px-2" onClick={() => openEditModal(org)}>
+                      <Button variant="outline" size="sm" className="px-2" onClick={() => openEditModal(org)} aria-label={`Edit ${org.name}`}>
                         <Edit className="w-3.5 h-3.5 text-neutral-600" />
                       </Button>
-                      <Button variant="outline" size="sm" className="px-2 border-red-200 hover:bg-red-50 text-red-600" onClick={() => openDeleteModal(org)}>
+                      <Button variant="outline" size="sm" className="px-2 border-red-200 hover:bg-red-50 text-red-600" onClick={() => openDeleteModal(org)} aria-label={`Delete ${org.name}`}>
                         <Trash2 className="w-3.5 h-3.5" />
                       </Button>
                     </>
@@ -261,9 +261,9 @@ export const OrganizationsView: React.FC<OrganizationsViewProps> = ({
       <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} title="Register New Institute" subtitle="Provision a dedicated organization boundary" maxWidth="md">
         <form onSubmit={handleCreateSubmit} className="space-y-4 text-left">
           {error && <InlineNotice variant="error">{error}</InlineNotice>}
-          <Input label="Institute Name" required placeholder="e.g. Islamabad Vocational Training Academy" value={name} onChange={(e) => setName(e.target.value)} />
+          <Input label="Institute Name" required placeholder="e.g. Islamabad Vocational Training Academy" value={name} onChange={(e) => setName(e.target.value)} autoComplete="off" />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Institute Code" required placeholder="e.g. IVTA-ISB" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} />
+            <Input label="Institute Code" required placeholder="e.g. IVTA-ISB" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} autoComplete="off" spellCheck={false} />
             <Select label="Institute Type" value={type} onChange={(e) => setType(e.target.value as Organization['type'])} options={[{ value: 'VOCATIONAL_ACADEMY', label: 'Vocational Academy' }, { value: 'TECHNICAL_COLLEGE', label: 'Technical College' }, { value: 'PRIVATE_INSTITUTE', label: 'Private Skills Center' }, { value: 'ENTERPRISE_ACADEMY', label: 'Corporate Academy' }, { value: 'NAVTTC_AFFILIATED', label: 'NAVTTC Affiliated' }, { value: 'HYBRID', label: 'Hybrid Public/Private' }]} />
           </div>
           <Select label="SaaS Subscription Plan & Entitlement Tier" value={tier} onChange={(e) => setTier(e.target.value as SubscriptionTier)} options={[{ value: 'STARTER', label: 'Starter Plan' }, { value: 'GROWTH', label: 'Growth Plan' }, { value: 'ENTERPRISE', label: 'Enterprise Plan' }, { value: 'CUSTOM', label: 'Custom Plan' }]} />
@@ -272,8 +272,8 @@ export const OrganizationsView: React.FC<OrganizationsViewProps> = ({
             <Input label="Campus Address" placeholder="Street / Sector" value={address} onChange={(e) => setAddress(e.target.value)} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Contact Email" type="email" placeholder="info@academy.edu.pk" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
-            <Input label="Contact Phone" placeholder="+92 51 1234567" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} />
+            <Input label="Contact Email" type="email" placeholder="info@academy.edu.pk" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} autoComplete="email" spellCheck={false} />
+            <Input label="Contact Phone" placeholder="+92 51 1234567" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} autoComplete="tel" />
           </div>
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-200">
             <Button variant="outline" type="button" onClick={() => setIsCreateModalOpen(false)}>Cancel</Button>
@@ -285,15 +285,15 @@ export const OrganizationsView: React.FC<OrganizationsViewProps> = ({
       <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title="Edit Institute Profile" subtitle="Update basic information and contact details" maxWidth="md">
         <form onSubmit={handleEditSubmit} className="space-y-4 text-left">
           {error && <InlineNotice variant="error">{error}</InlineNotice>}
-          <Input label="Institute Name" required placeholder="e.g. Islamabad Vocational Training Academy" value={name} onChange={(e) => setName(e.target.value)} />
+          <Input label="Institute Name" required placeholder="e.g. Islamabad Vocational Training Academy" value={name} onChange={(e) => setName(e.target.value)} autoComplete="off" />
           <Select label="Institute Type" value={type} onChange={(e) => setType(e.target.value as Organization['type'])} options={[{ value: 'VOCATIONAL_ACADEMY', label: 'Vocational Academy' }, { value: 'TECHNICAL_COLLEGE', label: 'Technical College' }, { value: 'PRIVATE_INSTITUTE', label: 'Private Skills Center' }, { value: 'ENTERPRISE_ACADEMY', label: 'Corporate Academy' }, { value: 'NAVTTC_AFFILIATED', label: 'NAVTTC Affiliated' }, { value: 'HYBRID', label: 'Hybrid Public/Private' }]} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input label="City" required placeholder="e.g. Islamabad" value={city} onChange={(e) => setCity(e.target.value)} />
             <Input label="Campus Address" placeholder="Street / Sector" value={address} onChange={(e) => setAddress(e.target.value)} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Contact Email" type="email" placeholder="info@academy.edu.pk" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
-            <Input label="Contact Phone" placeholder="+92 51 1234567" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} />
+            <Input label="Contact Email" type="email" placeholder="info@academy.edu.pk" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} autoComplete="email" spellCheck={false} />
+            <Input label="Contact Phone" placeholder="+92 51 1234567" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} autoComplete="tel" />
           </div>
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-200">
             <Button variant="outline" type="button" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>

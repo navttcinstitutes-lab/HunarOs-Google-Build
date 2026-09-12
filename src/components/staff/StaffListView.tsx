@@ -159,7 +159,7 @@ export const StaffListView: React.FC<StaffListViewProps> = ({
     <div className="space-y-6 text-left">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-neutral-200">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-neutral-900">Staff & Access Control</h1>
+          <h1 className="text-xl font-bold tracking-tight text-neutral-900 text-balance">Staff & Access Control</h1>
           <p className="text-xs text-neutral-500 mt-1">Governed internal users. Public registration disabled.</p>
         </div>
         <div className="flex items-center gap-2">
@@ -250,6 +250,7 @@ export const StaffListView: React.FC<StaffListViewProps> = ({
                               size="sm"
                               className="px-2"
                               onClick={() => openEditModal(staff)}
+                              aria-label={`Edit ${staff.displayName}`}
                             >
                               <Edit className="w-3.5 h-3.5 text-neutral-600" />
                             </Button>
@@ -266,6 +267,7 @@ export const StaffListView: React.FC<StaffListViewProps> = ({
                               size="sm"
                               className="px-2 border-red-200 hover:bg-red-50 text-red-600"
                               onClick={() => openDeleteModal(staff)}
+                              aria-label={`Delete ${staff.displayName}`}
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </Button>
@@ -300,7 +302,7 @@ export const StaffListView: React.FC<StaffListViewProps> = ({
       <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title="Edit Staff Profile" subtitle="Update basic information and role" maxWidth="sm">
         <form onSubmit={handleEditSubmit} className="space-y-4 text-left">
           {editError && <InlineNotice variant="error">{editError}</InlineNotice>}
-          <Input label="Staff Name" required placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} />
+          <Input label="Staff Name" required placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
           <Select label="System Role" value={role} onChange={(e) => setRole(e.target.value as UserRole)} options={[
             { value: 'SUPER_OWNER', label: 'Platform Owner (Global)' },
             { value: 'SUPER_ADMIN', label: 'Super Admin (Tenant)' },
@@ -309,8 +311,8 @@ export const StaffListView: React.FC<StaffListViewProps> = ({
             { value: 'STAFF', label: 'Staff' }
           ]} />
           <div className="grid grid-cols-2 gap-4">
-            <Input label="CNIC (Optional)" placeholder="xxxxx-xxxxxxx-x" value={cnic} onChange={(e) => setCnic(e.target.value)} />
-            <Input label="Phone (Optional)" placeholder="+92 300 0000000" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} />
+            <Input label="CNIC (Optional)" placeholder="xxxxx-xxxxxxx-x" value={cnic} onChange={(e) => setCnic(e.target.value)} autoComplete="off" spellCheck={false} />
+            <Input label="Phone (Optional)" placeholder="+92 300 0000000" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} autoComplete="tel" />
           </div>
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-200">
             <Button variant="outline" type="button" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>

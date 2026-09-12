@@ -175,6 +175,7 @@ export const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
               placeholder="e.g. Muhammad Bilal"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              autoComplete="name"
             />
 
             <Input
@@ -184,13 +185,15 @@ export const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
               placeholder="bilal@institute.edu.pk"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              spellCheck={false}
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="text-xs font-semibold text-neutral-700 tracking-wide uppercase">
+                <label htmlFor="initial-pin" className="text-xs font-semibold text-neutral-700 tracking-wide uppercase">
                   Initial Access PIN <span className="text-rose-600">*</span>
                 </label>
                 <button
@@ -202,13 +205,16 @@ export const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
                 </button>
               </div>
               <input
+                id="initial-pin"
                 type="text"
                 required
                 maxLength={8}
                 placeholder="6-digit PIN"
                 value={initialPin}
                 onChange={(e) => setInitialPin(e.target.value)}
-                className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-mono tracking-widest text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                autoComplete="off"
+                spellCheck={false}
+                className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-mono tracking-widest text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-200"
               />
               <p className="text-[11px] text-neutral-500 mt-1">Never stored in plaintext. Hashed with unique salt.</p>
             </div>

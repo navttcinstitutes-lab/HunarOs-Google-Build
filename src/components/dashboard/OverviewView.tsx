@@ -28,7 +28,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-neutral-200">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-neutral-900">
+          <h1 className="text-xl font-bold tracking-tight text-neutral-900 text-balance">
             {activeOrg?.name || 'Operations Overview'}
           </h1>
           <p className="text-xs text-neutral-500 mt-1">

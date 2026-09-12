@@ -99,7 +99,7 @@ export const TopNav: React.FC<TopNavProps> = ({
                 )}
               </div>
             ) : (
-              <span className="text-xs text-neutral-400">Resolving Organization...</span>
+              <span className="text-xs text-neutral-400">Resolving Organization…</span>
             )}
           </div>
 

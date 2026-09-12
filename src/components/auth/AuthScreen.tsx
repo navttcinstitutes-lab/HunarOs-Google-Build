@@ -85,7 +85,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthenticated }) => {
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-neutral-900 text-white mb-4">
           <Shield className="w-6 h-6" />
         </div>
-        <h1 className="text-xl font-bold tracking-tight text-neutral-900">HunarOS</h1>
+        <h1 className="text-xl font-bold tracking-tight text-neutral-900 text-balance">HunarOS</h1>
         <p className="text-xs text-neutral-500 mt-1 uppercase tracking-wider font-medium">
           Enterprise Operating System for Training & Skills Organizations
         </p>
@@ -116,6 +116,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthenticated }) => {
           onClick={handleGoogleSignIn}
           disabled={isLoading}
           isLoading={isLoading}
+          style={{ height: '68.4445px', width: '250px', fontSize: '13px', lineHeight: '1px', textAlign: 'center', fontWeight: 'bold', fontFamily: 'system-ui' }}
           icon={
             <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24">
               <path
@@ -137,7 +138,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthenticated }) => {
             </svg>
           }
         >
-          Sign in with Google Account
+          Sign In with Google Account
         </Button>
 
         <div className="relative my-6">
@@ -157,7 +158,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthenticated }) => {
             label="Work Email"
             type="email"
             required
-            autoComplete="email"
+            autoComplete="email" spellCheck={false}
             placeholder="staff@institute.edu.pk"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -182,7 +183,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthenticated }) => {
             isLoading={isLoading}
             icon={<LogIn className="w-4 h-4" />}
           >
-            Sign in with PIN
+            Sign In with PIN
           </Button>
         </form>
       </div>
