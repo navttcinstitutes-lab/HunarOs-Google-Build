@@ -5,6 +5,7 @@ import {
   signOut as fbSignOut,
   User as FirebaseUser,
 } from 'firebase/auth';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import {
   collection,
   doc,
@@ -52,7 +53,16 @@ export async function resolveUserProfile(firebaseUser: FirebaseUser): Promise<Au
           createdAt: now,
           updatedAt: now,
         };
-        await setDoc(userDocRef, cleanFirestoreData(superOwnerProfile));
+        const app = auth.app;
+        const functions = getFunctions(app, 'asia-south1');
+        const provisionSelf = httpsCallable(functions, 'provisionSelf');
+
+        try {
+          const result = await provisionSelf();
+          // result.data contains { ok, alreadyExists, uid, role }
+        } catch (error) {
+          throw new Error('Account provisioning failed: ' + (error as Error).message);
+        }
         await logAuditEvent('global', 'BOOTSTRAP_SUPER_OWNER_PROVISIONED', 'USER', firebaseUser.uid);
         return { isAuthorized: true, userProfile: superOwnerProfile };
       } else {

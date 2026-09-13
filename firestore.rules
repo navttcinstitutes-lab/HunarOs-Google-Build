@@ -50,8 +50,18 @@ service cloud.firestore {
     match /users/{userId} {
       allow get: if isSignedIn() && (request.auth.uid == userId || isSuperOwner());
       allow list: if isSuperOwner();
-      allow create: if isSignedIn() && (request.auth.uid == userId || isSuperOwner());
-      allow update: if isSignedIn() && (request.auth.uid == userId || isSuperOwner());
+      allow create: if false;
+      allow update: if isSignedIn()
+        && request.auth.uid == userId
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'role',
+          'accountStatus',
+          'orgId',
+          'instituteAccess',
+          'uid',
+          'email',
+          'createdAt'
+        ]);
       allow delete: if isSuperOwner();
     }
 
